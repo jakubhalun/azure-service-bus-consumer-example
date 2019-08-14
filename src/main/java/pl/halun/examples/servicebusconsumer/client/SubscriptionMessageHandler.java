@@ -41,10 +41,10 @@ public class SubscriptionMessageHandler implements IMessageHandler {
         LOGGER.info("Message Id: {}, Sequence number: {}, EnqueuedTimeUtc: {}, ExpiresAtUtc: {}, ContentType: {}",
                 message.getMessageId(), message.getSequenceNumber(), message.getEnqueuedTimeUtc(),
                 message.getExpiresAtUtc(), message.getContentType());
-        if (message.getContentType().contentEquals("application/json")) {
-            List<byte[]> bodyList = message.getMessageBody().getBinaryData();
-            bodyList.forEach(this::logContent);
-        }
+
+        List<byte[]> bodyList = message.getMessageBody().getBinaryData();
+        bodyList.forEach(this::logContent);
+
         return subscriptionClient.completeAsync(message.getLockToken());
     }
 
