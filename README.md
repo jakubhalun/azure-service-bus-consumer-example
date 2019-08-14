@@ -6,7 +6,7 @@ Java 8, Gradle
 
 ### Usage
 * Fill the *application.properties* file with a connection string to a Service Bus and entity path.
-  * Format of entity path is topicName/subscriptions/subscriptionName
+  * Format of entity path is *topicName/subscriptions/subscriptionName*
 * Run **gradle bootRun**
 
 
