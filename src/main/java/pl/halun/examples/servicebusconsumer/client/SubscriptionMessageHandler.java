@@ -1,60 +1,52 @@
 package pl.halun.examples.servicebusconsumer.client;
 
-import com.microsoft.azure.servicebus.*;
-import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
+import com.microsoft.azure.servicebus.ExceptionPhase;
+import com.microsoft.azure.servicebus.IMessage;
+import com.microsoft.azure.servicebus.IMessageHandler;
+import com.microsoft.azure.servicebus.MessageHandlerOptions;
+import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import pl.halun.examples.servicebusconsumer.configuration.ServiceBusConfiguration;
 
 import javax.annotation.PostConstruct;
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 @Service
-public class SubscriptionMessageHandler implements IMessageHandler {
+@ConditionalOnProperty(
+        value="azure.servicebus.sessionEnabled",
+        havingValue = "false"
+)
+public class SubscriptionMessageHandler extends SubscriptionHandler implements IMessageHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionMessageHandler.class);
 
-    private SubscriptionClient subscriptionClient;
-
     @Autowired
-    public SubscriptionMessageHandler(ServiceBusConfiguration serviceBusConfiguration) throws Exception {
-        subscriptionClient = new SubscriptionClient(new ConnectionStringBuilder(
-                serviceBusConfiguration.getConnectionString(),
-                serviceBusConfiguration.getEntityPath()), ReceiveMode.PEEKLOCK);
+    public SubscriptionMessageHandler(ServiceBusConfiguration serviceBusConfiguration) throws ServiceBusException,
+            InterruptedException {
+        super(serviceBusConfiguration);
     }
 
     @PostConstruct
-    private void registerMessaageHandler() throws Exception {
+    private void registerMessageHandler() throws Exception {
         subscriptionClient.registerMessageHandler(this,
                 new MessageHandlerOptions(1, false, Duration.ofMinutes(1)),
                 Executors.newSingleThreadExecutor());
+        LOGGER.info("Registered basic message handler. No session");
     }
 
     @Override
     public CompletableFuture<Void> onMessageAsync(IMessage message) {
-        LOGGER.info("Message Id: {}, Sequence number: {}, EnqueuedTimeUtc: {}, ExpiresAtUtc: {}, ContentType: {}",
-                message.getMessageId(), message.getSequenceNumber(), message.getEnqueuedTimeUtc(),
-                message.getExpiresAtUtc(), message.getContentType());
-
-        List<byte[]> bodyList = message.getMessageBody().getBinaryData();
-        bodyList.forEach(this::logContent);
-
+        logMessage(message);
         return subscriptionClient.completeAsync(message.getLockToken());
-    }
-
-    private void logContent(byte[] body) {
-        String content = new String(body, UTF_8);
-        LOGGER.info("Content: {}", content);
     }
 
     @Override
     public void notifyException(Throwable exception, ExceptionPhase phase) {
-        LOGGER.error("{} - {}", phase.toString(), exception.getMessage());
+        logError(exception, phase);
     }
 }

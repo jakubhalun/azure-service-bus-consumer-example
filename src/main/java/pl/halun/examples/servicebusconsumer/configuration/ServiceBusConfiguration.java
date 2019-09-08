@@ -1,9 +1,7 @@
 package pl.halun.examples.servicebusconsumer.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Component
 @ConfigurationProperties(prefix = "azure.servicebus")
 public class ServiceBusConfiguration {
 
@@ -21,5 +19,17 @@ public class ServiceBusConfiguration {
 
     public Boolean getSessionEnabled() {
         return sessionEnabled;
+    }
+
+    public void setConnectionString(String connectionString) {
+        this.connectionString = connectionString;
+    }
+
+    public void setEntityPath(String entityPath) {
+        this.entityPath = entityPath;
+    }
+
+    public void setSessionEnabled(Boolean sessionEnabled) {
+        this.sessionEnabled = sessionEnabled;
     }
 }
