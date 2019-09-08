@@ -43,7 +43,8 @@ public class SubscriptionSessionHandler extends SubscriptionHandler implements I
 
     @Override
     public CompletableFuture<Void> OnCloseSessionAsync(IMessageSession session) {
-        return null;
+        LOGGER.info("Session with ID {} closed", session.getSessionId());
+        return new CompletableFuture<>();
     }
 
     @Override
