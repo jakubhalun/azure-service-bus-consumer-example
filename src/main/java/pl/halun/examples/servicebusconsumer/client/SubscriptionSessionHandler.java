@@ -30,7 +30,7 @@ public class SubscriptionSessionHandler extends SubscriptionHandler implements I
     @PostConstruct
     private void registerSessionMessageHandler() throws Exception {
         subscriptionClient.registerSessionHandler(this,
-                new SessionHandlerOptions(1, false, Duration.ofMinutes(1)),
+                new SessionHandlerOptions(4, false, Duration.ofMinutes(1)),
                 Executors.newSingleThreadExecutor());
         LOGGER.info("Registered session message handler.");
     }
@@ -38,13 +38,13 @@ public class SubscriptionSessionHandler extends SubscriptionHandler implements I
     @Override
     public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage message) {
         logMessage(message);
-        return new CompletableFuture<>();
+        return session.completeAsync(message.getLockToken());
     }
 
     @Override
     public CompletableFuture<Void> OnCloseSessionAsync(IMessageSession session) {
         LOGGER.info("Session with ID {} closed", session.getSessionId());
-        return new CompletableFuture<>();
+        return null;
     }
 
     @Override
