@@ -1,8 +1,10 @@
 package pl.halun.examples.servicebusconsumer.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "azure.servicebus")
+@Component
 public class ServiceBusConfiguration {
 
     private String connectionString;
