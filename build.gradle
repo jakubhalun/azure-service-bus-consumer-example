@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.0.M5'
+	id 'org.springframework.boot' version '2.1.8.RELEASE'
 	id 'java'
 }
 
@@ -7,7 +7,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'pl.halun.examples'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '1.11'
 
 repositories {
 	mavenCentral()
@@ -17,6 +17,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	compile group: 'com.microsoft.azure', name: 'azure-servicebus', version: '2.0.0'
+	compileOnly "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 		exclude group: 'junit', module: 'junit'
