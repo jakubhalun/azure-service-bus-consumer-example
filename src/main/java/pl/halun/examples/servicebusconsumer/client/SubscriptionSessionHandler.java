@@ -38,7 +38,7 @@ public class SubscriptionSessionHandler extends SubscriptionHandler implements I
     @Override
     public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage message) {
         logMessage(message);
-        return subscriptionClient.completeAsync(message.getLockToken());
+        return new CompletableFuture<>();
     }
 
     @Override
