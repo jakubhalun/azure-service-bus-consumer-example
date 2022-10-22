@@ -126,5 +126,5 @@ build/*
 
 # End of https://www.gitignore.io/api/java,maven,intellij
 
-.gradle/*
+.gradle/**
 .gradle/buildOutputCleanup/
