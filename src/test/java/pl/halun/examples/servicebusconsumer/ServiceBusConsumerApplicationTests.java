@@ -9,5 +9,4 @@ class ServiceBusConsumerApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
